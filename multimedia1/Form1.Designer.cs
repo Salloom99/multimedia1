@@ -29,7 +29,6 @@ namespace multimedia1
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.button1 = new System.Windows.Forms.Button();
@@ -42,7 +41,7 @@ namespace multimedia1
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Image = global::multimedia1.Properties.Resources.shapes_02;
             this.pictureBox1.Location = new System.Drawing.Point(12, 37);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(399, 229);
@@ -79,6 +78,7 @@ namespace multimedia1
             this.edgeDetectionPic.Location = new System.Drawing.Point(554, 37);
             this.edgeDetectionPic.Name = "edgeDetectionPic";
             this.edgeDetectionPic.Size = new System.Drawing.Size(399, 229);
+            this.edgeDetectionPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.edgeDetectionPic.TabIndex = 3;
             this.edgeDetectionPic.TabStop = false;
             this.edgeDetectionPic.Click += new System.EventHandler(this.edgeDetectionPic_Click);
