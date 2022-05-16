@@ -271,10 +271,5 @@ namespace multimedia1
                 }
             }
         }
-
-        private void edgeDetectionPic_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
