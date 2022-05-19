@@ -32,6 +32,7 @@ namespace multimedia1
         }
         void Init() {
             fillAlgo = new FloodFill(fillAlgo);
+            fillAlgo.Bitmap = new CustomBitmap((Bitmap)pictureBox1.Image, PixelFormat.Format32bppRgb);
 
         }
 
