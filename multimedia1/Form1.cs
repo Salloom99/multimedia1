@@ -5,11 +5,13 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace multimedia1
 {
@@ -21,7 +23,7 @@ namespace multimedia1
 
         private Color color;
 
-        FloodFill fillAlgo ;
+        FloodFill fillAlgo;
 
         public Form1()
         {
@@ -30,12 +32,14 @@ namespace multimedia1
             graphics = pictureBox1.CreateGraphics();
             Init();
         }
-        void Init() {
+        void Init()
+        {
             fillAlgo = new FloodFill(fillAlgo);
 
         }
 
-        void StartFill(Point pt) {
+        void StartFill(Point pt)
+        {
             fillAlgo.StartFill(pt);
         }
 
@@ -51,13 +55,13 @@ namespace multimedia1
                 using (var context = Graphics.FromImage(buffer))
                 {
                     SolidBrush brush = new SolidBrush(color);
-                    graphics.FillEllipse(brush, e.X, e.Y, 2, 2);
+                    graphics.FillEllipse(brush, e.X, e.Y, 10, 10);
                     double x = (double)((double)e.X / (double)pictureBox1.Width) * (double)pictureBox1.Image.Width;
-                    double y  = ((double)((double)e.Y / (double)pictureBox1.Height )* (double)pictureBox1.Image.Height);
+                    double y = ((double)((double)e.Y / (double)pictureBox1.Height) * (double)pictureBox1.Image.Height);
                     StartFill(new Point((int)x, (int)y));
-                  //  Trace.WriteLine("e.X " + (double)((double)e.X / (double)pictureBox1.Width) + "e.Y" + ((double)e.Y / (double)pictureBox1.Height));
-                  //  Trace.WriteLine("pic.w " + pictureBox1.Width+ "h" + pictureBox1.Height);
-                 //   Trace.WriteLine("s " + x + " s " + y);
+                    //  Trace.WriteLine("e.X " + (double)((double)e.X / (double)pictureBox1.Width) + "e.Y" + ((double)e.Y / (double)pictureBox1.Height));
+                    //  Trace.WriteLine("pic.w " + pictureBox1.Width+ "h" + pictureBox1.Height);
+                    //   Trace.WriteLine("s " + x + " s " + y);
                     pictureBox1.Image = fillAlgo.Bitmap.Bitmap;
                 }
             }
@@ -88,7 +92,7 @@ namespace multimedia1
             {
 
                 pictureBox1.Image = new Bitmap(opendFile.FileName);
-                fillAlgo.Bitmap = new CustomBitmap((Bitmap) pictureBox1.Image,PixelFormat.Format32bppRgb);
+                fillAlgo.Bitmap = new CustomBitmap((Bitmap)pictureBox1.Image, PixelFormat.Format32bppRgb);
             }
 
         }
@@ -102,6 +106,23 @@ namespace multimedia1
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
+            saveFileDialog.Title = "Save an Image File";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                pictureBox1.Image.Save(saveFileDialog.FileName, ImageFormat.Jpeg);
+
+            }
+            else { 
+            }
+
 
         }
     }
