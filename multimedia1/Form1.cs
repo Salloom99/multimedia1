@@ -52,24 +52,27 @@ namespace multimedia1
         {
             if (draw)
             {
-                using (var context = Graphics.FromImage(buffer))
-                {
-                    SolidBrush brush = new SolidBrush(color);
-                    graphics.FillEllipse(brush, e.X, e.Y, 10, 10);
-                    double x = (double)((double)e.X / (double)pictureBox1.Width) * (double)pictureBox1.Image.Width;
-                    double y = ((double)((double)e.Y / (double)pictureBox1.Height) * (double)pictureBox1.Image.Height);
-                    StartFill(new Point((int)x, (int)y));
-                    //  Trace.WriteLine("e.X " + (double)((double)e.X / (double)pictureBox1.Width) + "e.Y" + ((double)e.Y / (double)pictureBox1.Height));
-                    //  Trace.WriteLine("pic.w " + pictureBox1.Width+ "h" + pictureBox1.Height);
-                    //   Trace.WriteLine("s " + x + " s " + y);
-                    pictureBox1.Image = fillAlgo.Bitmap.Bitmap;
-                }
+                Coloring(sender,e);
             }
         }
-
+        void Coloring(object sender, MouseEventArgs e) {
+            using (var context = Graphics.FromImage(buffer))
+            {
+                SolidBrush brush = new SolidBrush(color);
+                graphics.FillEllipse(brush, e.X, e.Y, 10, 10);
+                double x = (double)((double)e.X / (double)pictureBox1.Width) * (double)pictureBox1.Image.Width;
+                double y = ((double)((double)e.Y / (double)pictureBox1.Height) * (double)pictureBox1.Image.Height);
+                StartFill(new Point((int)x, (int)y));
+                //  Trace.WriteLine("e.X " + (double)((double)e.X / (double)pictureBox1.Width) + "e.Y" + ((double)e.Y / (double)pictureBox1.Height));
+                //  Trace.WriteLine("pic.w " + pictureBox1.Width+ "h" + pictureBox1.Height);
+                //   Trace.WriteLine("s " + x + " s " + y);
+                pictureBox1.Image = fillAlgo.Bitmap.Bitmap;
+            }
+        }
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             draw = true;
+            Coloring(sender, e);
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
