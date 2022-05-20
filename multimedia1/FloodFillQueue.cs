@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace multimedia1
 {
@@ -12,9 +8,6 @@ namespace multimedia1
         int size;
         int head;
 
-        /// <summary>
-        /// Returns the number of items currently in the queue.
-        /// </summary>
         public int Count
         {
             get { return size; }
@@ -32,13 +25,11 @@ namespace multimedia1
             size = 0;
         }
 
-        /// <summary>Gets the <see cref="FloodFillRange"/> at the beginning of the queue.</summary>
         public FloodFillRange First
         {
             get { return array[head]; }
         }
 
-        /// <summary>Adds a <see cref="FloodFillRange"/> to the end of the queue.</summary>
         public void Enqueue(ref FloodFillRange r)
         {
             if (size + head == array.Length)
@@ -51,7 +42,6 @@ namespace multimedia1
             array[head + (size++)] = r;
         }
 
-        /// <summary>Removes and returns the <see cref="FloodFillRange"/> at the beginning of the queue.</summary>
         public FloodFillRange Dequeue()
         {
             FloodFillRange range = new FloodFillRange();
@@ -59,8 +49,8 @@ namespace multimedia1
             {
                 range = array[head];
                 array[head] = new FloodFillRange();
-                head++;//advance head position
-                size--;//update size to exclude dequeued item
+                head++;
+                size--;
             }
             return range;
         }

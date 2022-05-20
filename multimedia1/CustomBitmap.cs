@@ -36,13 +36,8 @@ namespace multimedia1
             get { return byteArray.bits; }
         }
 
-        private CustomBitmap owner;
 
-        public CustomBitmap Owner
-        {
-            get { return owner; }
-        }
-
+  
         public IntPtr BitPtr
         {
             get
@@ -95,10 +90,8 @@ namespace multimedia1
             byteArray.ReleaseReference();
             disposed = true;
 
-            //Set managed object refs to null if explicitly disposing, so that they can be cleaned up by the GC.
             if (disposing)
             {
-                owner = null;
                 bitmap = null;
             }
         }
@@ -122,7 +115,6 @@ namespace multimedia1
         public SharedPinnedByteArray(int length)
         {
             bits = new byte[length];
-            // if not pinned the GC can move around the array
             handle = GCHandle.Alloc(bits, GCHandleType.Pinned);
             bitPtr = Marshal.UnsafeAddrOfPinnedArrayElement(bits, 0);
             refCount++;

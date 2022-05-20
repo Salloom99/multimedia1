@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace multimedia1
 {
-    public delegate void UpdateScreenDelegate(ref int x, ref int y);
 
     internal class FloodFill
     {
         protected CustomBitmap bitmap;
         protected byte[] tolerance = new byte[] { 25, 25, 25 };
-        protected Color fillColor = Color.Magenta;
+        protected Color fillColor = Color.Gray;
 
-        //cached bitmap properties
         protected int bitmapWidth = 0;
         protected int bitmapHeight = 0;
         protected int bitmapStride = 0;
@@ -25,15 +23,9 @@ namespace multimedia1
         FloodFillQueue ranges = new FloodFillQueue();
 
 
-        //internal int timeBenchmark = 0;
-        internal UpdateScreenDelegate UpdateScreen;
-
-        //internal, initialized per fill
-        //protected BitArray pixelsChecked;
         protected bool[] pixelsChecked;
         protected byte[] byteFillColor;
         protected byte[] startColor;
-        //protected int stride;
 
         public FloodFill(FloodFill configSource)
         {
@@ -69,10 +61,7 @@ namespace multimedia1
 
         protected void PrepareForFloodFill(Point pt)
         {
-            //cache data in member variables to decrease overhead of property calls
-            //this is especially important with Width and Height, as they call
-            //GdipGetImageWidth() and GdipGetImageHeight() respectively in gdiplus.dll - 
-            //which means major overhead.
+
             byteFillColor = new byte[] { fillColor.B, fillColor.G, fillColor.R };
             bitmapStride = bitmap.Stride;
             bitmapPixelFormatSize = bitmap.PixelFormatSize;
@@ -88,43 +77,34 @@ namespace multimedia1
         {
 
 
-            //***Prepare for fill.
             PrepareForFloodFill(pt);
 
             ranges = new FloodFillQueue(((bitmapWidth + bitmapHeight) / 2) * 5);//new Queue<FloodFillRange>();
 
-            //***Get starting color.
             int x = pt.X; int y = pt.Y;
             int idx = CoordsToByteIndex(ref x, ref y);
             startColor = new byte[] { bitmap.Bits[idx], bitmap.Bits[idx + 1], bitmap.Bits[idx + 2] };
 
             bool[] pixelsChecked = this.pixelsChecked;
 
-            //***Do first call to floodfill.
             LinearFill(ref x, ref y);
 
-            //***Call floodfill routine while floodfill ranges still exist on the queue
             while (ranges.Count > 0)
             {
-                //**Get Next Range Off the Queue
                 FloodFillRange range = ranges.Dequeue();
 
-                //**Check Above and Below Each Pixel in the Floodfill Range
-                int downPxIdx = (bitmapWidth * (range.Y + 1)) + range.StartX;//CoordsToPixelIndex(lFillLoc,y+1);
-                int upPxIdx = (bitmapWidth * (range.Y - 1)) + range.StartX;//CoordsToPixelIndex(lFillLoc, y - 1);
-                int upY = range.Y - 1;//so we can pass the y coord by ref
+                int downPxIdx = (bitmapWidth * (range.Y + 1)) + range.StartX;
+                int upPxIdx = (bitmapWidth * (range.Y - 1)) + range.StartX;
+                int upY = range.Y - 1;
                 int downY = range.Y + 1;
                 int tempIdx;
                 for (int i = range.StartX; i <= range.EndX; i++)
                 {
-                    //*Start Fill Upwards
-                    //if we're not above the top of the bitmap and the pixel above this one is within the color tolerance
+
                     tempIdx = CoordsToByteIndex(ref i, ref upY);
                     if (range.Y > 0 && (!pixelsChecked[upPxIdx]) && CheckPixel(ref tempIdx))
                         LinearFill(ref i, ref upY);
 
-                    //*Start Fill Downwards
-                    //if we're not below the bottom of the bitmap and the pixel below this one is within the color tolerance
                     tempIdx = CoordsToByteIndex(ref i, ref downY);
                     if (range.Y < (bitmapHeight - 1) && (!pixelsChecked[downPxIdx]) && CheckPixel(ref tempIdx))
                         LinearFill(ref i, ref downY);
@@ -139,64 +119,52 @@ namespace multimedia1
         void LinearFill(ref int x, ref int y)
         {
 
-            //cache some bitmap and fill info in local variables for a little extra speed
             byte[] bitmapBits = this.bitmapBits;
             bool[] pixelsChecked = this.pixelsChecked;
             byte[] byteFillColor = this.byteFillColor;
             int bitmapPixelFormatSize = this.bitmapPixelFormatSize;
             int bitmapWidth = this.bitmapWidth;
 
-            //***Find Left Edge of Color Area
-            int lFillLoc = x; //the location to check/fill on the left
-            int idx = CoordsToByteIndex(ref x, ref y); //the byte index of the current location
-            int pxIdx = (bitmapWidth * y) + x;//CoordsToPixelIndex(x,y);
+            int lFillLoc = x; 
+            int idx = CoordsToByteIndex(ref x, ref y); 
+            int pxIdx = (bitmapWidth * y) + x;
             while (true)
             {
-                //**fill with the color
-                bitmapBits[idx] = byteFillColor[0];
-                bitmapBits[idx + 1] = byteFillColor[1];
-                bitmapBits[idx + 2] = byteFillColor[2];
-                //**indicate that this pixel has already been checked and filled
-                pixelsChecked[pxIdx] = true;
-                //**screen update for 'slow' fill
+                bitmapBits[idx] = byteFillColor[0];//R
+                bitmapBits[idx + 1] = byteFillColor[1];//G
+                bitmapBits[idx + 2] = byteFillColor[2];//B
 
-                //**de-increment
-                lFillLoc--;     //de-increment counter
-                pxIdx--;        //de-increment pixel index
-                idx -= bitmapPixelFormatSize;//de-increment byte index
-                //**exit loop if we're at edge of bitmap or color area
+                pixelsChecked[pxIdx] = true;
+
+                lFillLoc--;     
+                pxIdx--;        
+                idx -= bitmapPixelFormatSize;
+               
+
                 if (lFillLoc <= 0 || (pixelsChecked[pxIdx]) || !CheckPixel(ref idx))
                     break;
 
             }
             lFillLoc++;
 
-            //***Find Right Edge of Color Area
-            int rFillLoc = x; //the location to check/fill on the left
+            int rFillLoc = x;
             idx = CoordsToByteIndex(ref x, ref y);
             pxIdx = (bitmapWidth * y) + x;
             while (true)
             {
-                //**fill with the color
                 bitmapBits[idx] = byteFillColor[0];
                 bitmapBits[idx + 1] = byteFillColor[1];
                 bitmapBits[idx + 2] = byteFillColor[2];
-                //**indicate that this pixel has already been checked and filled
                 pixelsChecked[pxIdx] = true;
-                //**screen update for 'slow' fill
 
-                //**increment
-                rFillLoc++;     //increment counter
-                pxIdx++;        //increment pixel index
-                idx += bitmapPixelFormatSize;//increment byte index
-                //**exit loop if we're at edge of bitmap or color area
+                rFillLoc++;  
+                idx += bitmapPixelFormatSize;
                 if (rFillLoc >= bitmapWidth || pixelsChecked[pxIdx] || !CheckPixel(ref idx))
                     break;
 
             }
             rFillLoc--;
 
-            //add range to queue
             FloodFillRange r = new FloodFillRange(lFillLoc, rFillLoc, y);
             ranges.Enqueue(ref r);
         }
