@@ -20,7 +20,7 @@ namespace multimedia1
         private Bitmap buffer;
         private bool draw;
         private Graphics graphics;
-
+        
         private Color color;
 
         FloodFill fillAlgo;
@@ -34,6 +34,7 @@ namespace multimedia1
         }
         void Init()
         {
+            label1.Text = "25";
             fillAlgo = new FloodFill(fillAlgo);
             fillAlgo.Bitmap = new CustomBitmap((Bitmap)pictureBox1.Image, PixelFormat.Format32bppRgb);
 
@@ -41,7 +42,8 @@ namespace multimedia1
 
         void StartFill(Point pt)
         {
-            fillAlgo.StartFill(pt);
+            try { fillAlgo.StartFill(pt); } catch (Exception ex) { }
+            
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -53,14 +55,19 @@ namespace multimedia1
         {
             if (draw)
             {
-                Coloring(sender,e);
-            }
+                try
+                {
+                    Coloring(sender, e);
+                }
+                catch (Exception c) { 
+                }
+                }
         }
         void Coloring(object sender, MouseEventArgs e) {
             using (var context = Graphics.FromImage(buffer))
             {
                 SolidBrush brush = new SolidBrush(color);
-                graphics.FillEllipse(brush, e.X, e.Y, 10, 10);
+                graphics.FillEllipse(brush, e.X, e.Y, 7, 7);
                 double x = (double)((double)e.X / (double)pictureBox1.Width) * (double)pictureBox1.Image.Width;
                 double y = ((double)((double)e.Y / (double)pictureBox1.Height) * (double)pictureBox1.Image.Height);
                 StartFill(new Point((int)x, (int)y));
@@ -92,7 +99,12 @@ namespace multimedia1
             }
         }
 
-        private void toolStripButton2_Click(object sender, EventArgs e) { }
+        private void toolStripButton2_Click(object sender, EventArgs e) {
+            colorDialog1.ShowDialog();
+            color = colorDialog1.Color;
+            toolStripButton2.BackColor = colorDialog1.Color;
+            fillAlgo.FillColor = color;
+        }
         private void getBoxNewSize()
         {
 
@@ -129,6 +141,46 @@ namespace multimedia1
             {
                 pictureBox1.Image.Save(saveFileDialog.FileName, ImageFormat.Jpeg);
             }
+        }
+
+        private void toolStripProgressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripTextBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            label1.Text = trackBar1.Value.ToString();
+            fillAlgo.Tolerance = new byte[] { (byte)trackBar1.Value, (byte)trackBar1.Value, (byte)trackBar1.Value};
+        }
+    }
+
+
+    public class ToolStripTraceBarItem : ToolStripControlHost
+    {
+        public ToolStripTraceBarItem() : base(new TrackBar())
+        {
+            TrackBar tb = (TrackBar)this.Control;
         }
     }
 }

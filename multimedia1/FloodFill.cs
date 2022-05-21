@@ -96,8 +96,12 @@ namespace multimedia1
             //***Get starting color.
             int x = pt.X; int y = pt.Y;
             int idx = CoordsToByteIndex(ref x, ref y);
-            startColor = new byte[] { bitmap.Bits[idx], bitmap.Bits[idx + 1], bitmap.Bits[idx + 2] };
-
+            try
+            {
+                startColor = new byte[] { bitmap.Bits[idx], bitmap.Bits[idx + 1], bitmap.Bits[idx + 2] };
+            }
+            catch (IndexOutOfRangeException ex) { 
+            }
             bool[] pixelsChecked = this.pixelsChecked;
 
             //***Do first call to floodfill.
