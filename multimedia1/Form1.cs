@@ -87,11 +87,32 @@ namespace multimedia1
             if (opendFile.ShowDialog() == DialogResult.OK)
             {
                 pictureBox1.Image = new Bitmap(opendFile.FileName);
+                getBoxNewSize();
                 fillAlgo.Bitmap = new CustomBitmap((Bitmap)pictureBox1.Image, PixelFormat.Format32bppRgb);
             }
         }
 
-        private void toolStripButton2_Click(object sender, EventArgs e)
+        private void toolStripButton2_Click(object sender, EventArgs e) { }
+        private void getBoxNewSize()
+        {
+
+            double widthRatio, hightRatio;
+            widthRatio = (double)pictureBox1.Width / (double)pictureBox1.Image.Width;
+            hightRatio = (double)pictureBox1.Height / (double)pictureBox1.Image.Height;
+
+            if (widthRatio < hightRatio)
+            {
+                pictureBox1.Height = (int)(pictureBox1.Image.Height * widthRatio);
+            }
+            else
+            {
+                pictureBox1.Width = (int)(pictureBox1.Image.Width * (hightRatio));
+            }
+
+        }
+
+
+        private void Form1_Load(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
             color = colorDialog1.Color;
