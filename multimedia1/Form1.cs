@@ -81,53 +81,33 @@ namespace multimedia1
             draw = false;
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            colorDialog1.ShowDialog();
-            color = colorDialog1.Color;
-            button1.BackColor = colorDialog1.Color;
-            fillAlgo.FillColor = color;
-        }
-
-        private void UploadImageButtonClick(object sender, EventArgs e)
+        private void toolStripButton1_Click(object sender, EventArgs e)
         {
             OpenFileDialog opendFile = new OpenFileDialog();
             if (opendFile.ShowDialog() == DialogResult.OK)
             {
-
                 pictureBox1.Image = new Bitmap(opendFile.FileName);
                 fillAlgo.Bitmap = new CustomBitmap((Bitmap)pictureBox1.Image, PixelFormat.Format32bppRgb);
             }
-
         }
 
-
-
-        private void Form1_Load(object sender, EventArgs e)
+        private void toolStripButton2_Click(object sender, EventArgs e)
         {
-
+            colorDialog1.ShowDialog();
+            color = colorDialog1.Color;
+            toolStripButton2.BackColor = colorDialog1.Color;
+            fillAlgo.FillColor = color;
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void toolStripButton3_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
             saveFileDialog.Title = "Save an Image File";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 pictureBox1.Image.Save(saveFileDialog.FileName, ImageFormat.Jpeg);
-
             }
-            else { 
-            }
-
-
         }
     }
 }
